@@ -1,0 +1,5 @@
+Method,Name,Error,Occurrences
+POST,/api/auth/login,HTTPError('401 Client Error: Unauthorized for url: /api/auth/login'),5
+GET,/api/health,HTTPError('429 Client Error: Too Many Requests for url: /api/health'),104
+POST,/api/auth/register,HTTPError('429 Client Error: Too Many Requests for url: /api/auth/register'),95
+POST,/api/auth/login,HTTPError('429 Client Error: Too Many Requests for url: /api/auth/login'),90
