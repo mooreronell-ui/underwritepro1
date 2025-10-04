@@ -69,23 +69,26 @@ async def lifespan(app: FastAPI):
     
     # Startup
     try:
-        # Check database connection
-        if not check_db_connection():
-            logger.error("Failed to connect to database")
-            raise Exception("Database connection failed")
-        
-        # Initialize database tables
-        init_db()
-        logger.info("Database initialized successfully")
-        
-        # Create necessary directories
+        # Create necessary directories first
         os.makedirs("uploads", exist_ok=True)
         os.makedirs("reports", exist_ok=True)
+        logger.info("Directories created successfully")
+        
+        # Try to connect to database (but don't crash if it fails immediately)
+        # Railway sometimes takes a moment to link services
+        db_connected = check_db_connection()
+        if db_connected:
+            # Initialize database tables
+            init_db()
+            logger.info("Database initialized successfully")
+        else:
+            logger.warning("Database connection not available at startup - will retry on first request")
+            logger.warning("This is normal if Railway is still linking services")
         
         logger.info("UnderwritePro SaaS started successfully")
     except Exception as e:
-        logger.error(f"Startup failed: {e}")
-        raise
+        logger.error(f"Startup error (non-fatal): {e}")
+        logger.info("Application will continue and retry database connection on first request")
     
     yield
     
@@ -226,10 +229,25 @@ class UnderwriteRequest(BaseModel):
 
 # ==================== Health & Monitoring ====================
 
+@app.get("/")
+async def root():
+    """Root endpoint for Railway health checks"""
+    return {
+        "app": "UnderwritePro SaaS",
+        "version": "4.0.0",
+        "status": "running",
+        "docs": "/docs"
+    }
+
+@app.get("/health")
+async def simple_health():
+    """Simple health check for Railway"""
+    return {"status": "ok"}
+
 @app.get("/api/health")
 @limiter.limit("1000/minute")
 async def health_check(request: Request):
-    """Health check endpoint"""
+    """Detailed health check endpoint"""
     return {
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
