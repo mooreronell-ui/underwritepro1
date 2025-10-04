@@ -1,19 +1,52 @@
+# Core FastAPI and Web Framework
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
-pydantic==2.9.2
 python-multipart==0.0.12
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
+
+# Data Validation and Models
+pydantic==2.9.2
+pydantic-settings==2.6.1
+email-validator==2.2.0
+
+# Database
 sqlalchemy==2.0.35
 psycopg2-binary==2.9.10
+alembic==1.14.0
+
+# Authentication and Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
 python-dotenv==1.0.1
+bcrypt==4.2.1
+cryptography==46.0.2
+
+# Rate Limiting and Security
 slowapi==0.1.9
 bleach==6.2.0
+
+# External Services
 openai==1.54.5
 stripe==11.2.0
 redis==5.2.0
+
+# 2FA and QR Codes
 pyotp==2.9.0
 qrcode[pil]==8.0
-psutil==6.1.0
+
+# Document Processing
 PyPDF2==3.0.1
+python-docx==1.1.2
+Pillow==11.3.0
+
+# PDF Report Generation
 reportlab==4.2.5
+
+# HTTP Requests
+requests==2.32.5
+httpx==0.28.1
+
+# System Monitoring
+psutil==6.1.0
+
+# Utilities
+python-dateutil==2.9.0

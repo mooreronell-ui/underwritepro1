@@ -1,0 +1,56 @@
+================================================
+RENDER.COM ENVIRONMENT VARIABLES
+Copy and paste these into your Render dashboard
+================================================
+
+REQUIRED VARIABLES (Must set before deployment):
+-------------------------------------------------
+
+JWT_SECRET_KEY=eb89a45acdfc2a2fa7e24ebe35b0ea01288be0355a45a078d37e8cd712ae6565
+
+PORT=8000
+
+DATABASE_URL=(This will be auto-filled when you add PostgreSQL database)
+
+
+OPTIONAL VARIABLES (Add later for full features):
+--------------------------------------------------
+
+OPENAI_API_KEY=(Your OpenAI API key - for AI bots)
+
+STRIPE_SECRET_KEY=(Your Stripe secret key - for subscriptions)
+
+STRIPE_WEBHOOK_SECRET=(Your Stripe webhook secret - for subscriptions)
+
+
+OTHER OPTIONAL SETTINGS:
+------------------------
+
+LOG_LEVEL=INFO
+
+ENVIRONMENT=production
+
+DEBUG=false
+
+
+================================================
+HOW TO ADD THESE IN RENDER:
+================================================
+
+1. Go to your Render dashboard
+2. Select your web service
+3. Click "Environment" in the left sidebar
+4. Click "Add Environment Variable"
+5. Copy each KEY and VALUE from above
+6. Click "Save Changes"
+
+================================================
+IMPORTANT NOTES:
+================================================
+
+- JWT_SECRET_KEY: Already generated for you above
+- DATABASE_URL: Will appear automatically after adding PostgreSQL
+- OPENAI_API_KEY: Get from https://platform.openai.com/api-keys
+- STRIPE keys: Get from https://dashboard.stripe.com/apikeys
+
+================================================
