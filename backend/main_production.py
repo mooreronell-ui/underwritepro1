@@ -69,6 +69,14 @@ async def lifespan(app: FastAPI):
     
     # Startup
     try:
+        # Debug: Log environment variables related to database
+        logger.info("=== Environment Check ===")
+        logger.info(f"DATABASE_URL exists: {bool(os.getenv('DATABASE_URL'))}")
+        logger.info(f"DATABASE_PUBLIC_URL exists: {bool(os.getenv('DATABASE_PUBLIC_URL'))}")
+        logger.info(f"PORT: {os.getenv('PORT', 'not set')}")
+        logger.info(f"RAILWAY_ENVIRONMENT: {os.getenv('RAILWAY_ENVIRONMENT', 'not set')}")
+        logger.info("========================")
+        
         # Create necessary directories first
         os.makedirs("uploads", exist_ok=True)
         os.makedirs("reports", exist_ok=True)

@@ -15,10 +15,20 @@ import enum
 logger = logging.getLogger(__name__)
 
 # Database URL from environment variable
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
+# Railway provides DATABASE_URL, check multiple possible variable names
+DATABASE_URL = (
+    os.getenv("DATABASE_URL") or 
+    os.getenv("DATABASE_PUBLIC_URL") or
+    os.getenv("PGDATABASE_URL") or
     "postgresql://uwpro:uwpro_secure_2024@localhost/underwritepro"
 )
+
+# Log the database URL being used (hide password for security)
+if DATABASE_URL and "localhost" not in DATABASE_URL:
+    logger.info(f"Using Railway database connection: {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'unknown'}")
+else:
+    logger.warning("Using localhost database - Railway DATABASE_URL not found!")
+    logger.warning(f"Available env vars: DATABASE_URL={os.getenv('DATABASE_URL')}, DATABASE_PUBLIC_URL={os.getenv('DATABASE_PUBLIC_URL')}")
 
 # Production-grade engine with connection pooling
 engine = create_engine(
