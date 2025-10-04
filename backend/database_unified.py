@@ -15,20 +15,25 @@ import enum
 logger = logging.getLogger(__name__)
 
 # Database URL from environment variable
-# Railway provides DATABASE_URL, check multiple possible variable names
-DATABASE_URL = (
-    os.getenv("DATABASE_URL") or 
-    os.getenv("DATABASE_PUBLIC_URL") or
-    os.getenv("PGDATABASE_URL") or
-    "postgresql://uwpro:uwpro_secure_2024@localhost/underwritepro"
-)
+# Works with Render, Railway, Heroku, and other platforms
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Log the database URL being used (hide password for security)
+# Render uses postgres:// but SQLAlchemy needs postgresql://
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    logger.info("Converted postgres:// to postgresql:// for SQLAlchemy compatibility")
+
+# Fallback to localhost for local development
+if not DATABASE_URL:
+    DATABASE_URL = "postgresql://uwpro:uwpro_secure_2024@localhost/underwritepro"
+    logger.warning("No DATABASE_URL found - using localhost for development")
+
+# Log connection info (without password)
 if DATABASE_URL and "localhost" not in DATABASE_URL:
-    logger.info(f"Using Railway database connection: {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'unknown'}")
+    host_info = DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'unknown'
+    logger.info(f"Using cloud database: {host_info}")
 else:
-    logger.warning("Using localhost database - Railway DATABASE_URL not found!")
-    logger.warning(f"Available env vars: DATABASE_URL={os.getenv('DATABASE_URL')}, DATABASE_PUBLIC_URL={os.getenv('DATABASE_PUBLIC_URL')}")
+    logger.info("Using localhost database")
 
 # Production-grade engine with connection pooling
 engine = create_engine(
