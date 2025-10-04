@@ -1,0 +1,106 @@
+================================================
+RAILWAY ENVIRONMENT VARIABLES
+Copy these into your Railway project
+================================================
+
+STEP 1: Add PostgreSQL Database First
+--------------------------------------
+1. Click "New" → "Database" → "Add PostgreSQL"
+2. Railway will automatically set DATABASE_URL
+3. No manual configuration needed!
+
+
+STEP 2: Set These Variables (REQUIRED)
+---------------------------------------
+
+JWT_SECRET_KEY=eb89a45acdfc2a2fa7e24ebe35b0ea01288be0355a45a078d37e8cd712ae6565
+
+PORT=8000
+
+
+STEP 3: Optional Variables (Add Later)
+---------------------------------------
+
+OPENAI_API_KEY=<your OpenAI API key from platform.openai.com>
+
+STRIPE_SECRET_KEY=<your Stripe secret key from dashboard.stripe.com>
+
+
+================================================
+HOW TO ADD IN RAILWAY:
+================================================
+
+1. Go to your Railway project
+2. Click on your web service (NOT the database)
+3. Click "Variables" tab
+4. Click "New Variable"
+5. Paste KEY and VALUE from above
+6. Click "Add"
+7. Repeat for each variable
+
+================================================
+IMPORTANT NOTES:
+================================================
+
+✅ DATABASE_URL: Auto-filled by Railway when you add PostgreSQL
+✅ JWT_SECRET_KEY: Already generated for you above
+✅ PORT: Must be 8000 for the app to work
+❌ Don't add DATABASE_URL manually - Railway does this automatically
+
+================================================
+WHAT EACH VARIABLE DOES:
+================================================
+
+DATABASE_URL
+  → Connects your app to PostgreSQL database
+  → Railway sets this automatically
+  → Format: postgresql://user:pass@host:port/db
+
+JWT_SECRET_KEY
+  → Secures user authentication tokens
+  → Keep this secret!
+  → Already generated for you above
+
+PORT
+  → The port your app listens on
+  → Railway needs this to route traffic
+  → Must be 8000
+
+OPENAI_API_KEY (Optional)
+  → Enables AI bots (Cassie, Sage, Axel, etc.)
+  → Get from: https://platform.openai.com/api-keys
+  → Cost: ~$0.01-$0.10 per AI request
+
+STRIPE_SECRET_KEY (Optional)
+  → Enables subscription payments
+  → Get from: https://dashboard.stripe.com/apikeys
+  → Free to use, Stripe takes 2.9% + $0.30 per transaction
+
+================================================
+VERIFICATION:
+================================================
+
+After adding variables, you should see:
+
+Required Variables (3):
+✅ DATABASE_URL (auto-added)
+✅ JWT_SECRET_KEY (you added)
+✅ PORT (you added)
+
+Optional Variables (0-2):
+⭕ OPENAI_API_KEY (if you want AI features)
+⭕ STRIPE_SECRET_KEY (if you want subscriptions)
+
+================================================
+READY TO DEPLOY!
+================================================
+
+Once you've added JWT_SECRET_KEY and PORT,
+Railway will automatically start deploying.
+
+Watch the logs and wait for:
+"UnderwritePro SaaS started successfully"
+
+Then visit your Railway URL! 🚀
+
+================================================
