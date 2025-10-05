@@ -16,7 +16,13 @@ logger = logging.getLogger(__name__)
 
 # Database URL from environment variable
 # Works with Render, Railway, Heroku, and other platforms
-DATABASE_URL = os.getenv("DATABASE_URL")
+# Check multiple possible environment variable names
+DATABASE_URL = (
+    os.getenv("DATABASE_URL") or
+    os.getenv("RENDER_EXTERNAL_URL") or
+    os.getenv("POSTGRES_URL") or
+    os.getenv("POSTGRESQL_URL")
+)
 
 # Render uses postgres:// but SQLAlchemy needs postgresql://
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
@@ -26,14 +32,15 @@ if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
 # Fallback to localhost for local development
 if not DATABASE_URL:
     DATABASE_URL = "postgresql://uwpro:uwpro_secure_2024@localhost/underwritepro"
-    logger.warning("No DATABASE_URL found - using localhost for development")
-
-# Log connection info (without password)
-if DATABASE_URL and "localhost" not in DATABASE_URL:
-    host_info = DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'unknown'
-    logger.info(f"Using cloud database: {host_info}")
+    logger.warning("No DATABASE_URL found in environment - using localhost for development")
+    logger.warning(f"Checked: DATABASE_URL, RENDER_EXTERNAL_URL, POSTGRES_URL, POSTGRESQL_URL")
 else:
-    logger.info("Using localhost database")
+    # Log connection info (without password)
+    if "localhost" not in DATABASE_URL:
+        host_info = DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'unknown'
+        logger.info(f"✅ Using cloud database: {host_info}")
+    else:
+        logger.info("Using localhost database")
 
 # Production-grade engine with connection pooling
 engine = create_engine(
