@@ -4,7 +4,7 @@ services:
     name: underwritepro
     env: docker
     region: oregon
-    plan: starter
+    plan: free
     dockerfilePath: ./Dockerfile
     envVars:
       - key: DATABASE_URL
@@ -23,4 +23,4 @@ databases:
     databaseName: underwritepro
     user: underwritepro
     region: oregon
-    plan: starter
+    plan: free
