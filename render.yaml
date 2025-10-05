@@ -1,11 +1,12 @@
 services:
-  # Web Service
+  # Web Service - Native Python (no Docker)
   - type: web
     name: underwritepro
-    env: docker
+    env: python
     region: oregon
     plan: free
-    dockerfilePath: ./Dockerfile
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd backend && gunicorn -w 4 -k uvicorn.workers.UvicornWorker main_production:app --bind 0.0.0.0:$PORT
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -14,7 +15,7 @@ services:
       - key: JWT_SECRET_KEY
         value: eb89a45acdfc2a2fa7e24ebe35b0ea01288be0355a45a078d37e8cd712ae6565
       - key: PORT
-        value: 8000
+        value: 10000
     healthCheckPath: /health
 
 databases:
