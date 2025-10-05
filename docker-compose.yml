@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: underwritepro
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password_2024
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Web Application
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres_password_2024@db:5432/underwritepro
+      JWT_SECRET_KEY: eb89a45acdfc2a2fa7e24ebe35b0ea01288be0355a45a078d37e8cd712ae6565
+      PORT: 8000
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./uploads:/app/uploads
+      - ./reports:/app/reports
+
+volumes:
+  postgres_data:

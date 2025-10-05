@@ -1,0 +1,26 @@
+services:
+  # Web Service
+  - type: web
+    name: underwritepro
+    env: docker
+    region: oregon
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: underwritepro-db
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        value: eb89a45acdfc2a2fa7e24ebe35b0ea01288be0355a45a078d37e8cd712ae6565
+      - key: PORT
+        value: 8000
+    healthCheckPath: /health
+
+databases:
+  # PostgreSQL Database
+  - name: underwritepro-db
+    databaseName: underwritepro
+    user: underwritepro
+    region: oregon
+    plan: starter
