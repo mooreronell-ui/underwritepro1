@@ -237,15 +237,19 @@ class UnderwriteRequest(BaseModel):
 
 # ==================== Health & Monitoring ====================
 
-@app.get("/")
-async def root():
-    """Root endpoint for Railway health checks"""
-    return {
-        "app": "UnderwritePro SaaS",
-        "version": "4.0.0",
-        "status": "running",
-        "docs": "/docs"
-    }
+# Root endpoint removed to allow frontend serving
+# The frontend will be served by the catch-all route at the bottom
+# API info available at /health endpoint
+
+# @app.get("/")
+# async def root():
+#     """Root endpoint for Railway health checks"""
+#     return {
+#         "app": "UnderwritePro SaaS",
+#         "version": "4.0.0",
+#         "status": "running",
+#         "docs": "/docs"
+#     }
 
 @app.get("/health")
 async def simple_health():
