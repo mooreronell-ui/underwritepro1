@@ -23,6 +23,14 @@ from underwriting import UnderwritingEngine, UnderwritingRequest, FinancialData,
 from document_parser import DocumentParser
 from report_generator import ReportGenerator
 
+# Import enhanced routes (AI, Communication, Workflows)
+try:
+    from enhanced_routes import ai_router, communication_router, workflow_router
+    ENHANCED_ROUTES_AVAILABLE = True
+except ImportError:
+    ENHANCED_ROUTES_AVAILABLE = False
+    print("Warning: Enhanced routes not available")
+
 # Initialize FastAPI app
 app = FastAPI(
     title="UnderwritePro SaaS API",
@@ -45,6 +53,13 @@ os.makedirs("reports", exist_ok=True)
 
 # Initialize database
 init_db()
+
+# Register enhanced routes if available
+if ENHANCED_ROUTES_AVAILABLE:
+    app.include_router(ai_router)
+    app.include_router(communication_router)
+    app.include_router(workflow_router)
+    print("✅ Enhanced routes registered (AI, Communication, Workflows)")
 
 # Pydantic models for requests/responses
 class UserCreate(BaseModel):
