@@ -609,7 +609,7 @@ def generate_report(
     return {"report_id": report.id, "file_path": output_path, "message": "Report generated successfully"}
 
 # Mount static files and serve frontend
-frontend_dist = "../frontend/dist"
+frontend_dist = os.path.join(os.path.dirname(__file__), "static")
 if os.path.exists(frontend_dist):
     app.mount("/assets", StaticFiles(directory=f"{frontend_dist}/assets"), name="assets")
     
