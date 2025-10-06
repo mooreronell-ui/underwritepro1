@@ -268,6 +268,79 @@ def list_deals(
     
     return {"items": result}
 
+# Loans endpoint (alias for deals - for frontend compatibility)
+@app.get("/api/loans")
+def list_loans(
+    status: Optional[str] = None,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """List all loans (deals) for the user's organization"""
+    # Reuse the deals logic
+    query = db.query(Deal).filter(Deal.organization_id == current_user.organization_id)
+    
+    if status:
+        query = query.filter(Deal.status == status)
+    
+    deals = query.order_by(Deal.created_at.desc()).all()
+    
+    result = []
+    for deal in deals:
+        borrower = db.query(Borrower).filter(Borrower.id == deal.borrower_id).first()
+        result.append({
+            "id": deal.id,
+            "borrower_name": borrower.name if borrower else "Unknown",
+            "company_name": borrower.name if borrower else "Unknown",  # Add company_name for frontend
+            "loan_amount": deal.loan_amount,
+            "status": deal.status,
+            "loan_purpose": deal.deal_type,  # Map deal_type to loan_purpose
+            "created_at": deal.created_at.isoformat()
+        })
+    
+    return result  # Return array directly (not wrapped in {"items"})
+
+@app.post("/api/loans")
+def create_loan(
+    loan_data: DealCreate,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Create a new loan (deal)"""
+    # Create borrower first if needed
+    borrower = Borrower(
+        organization_id=current_user.organization_id,
+        name=loan_data.borrower_id,  # This should be borrower name from frontend
+        entity_type="business"
+    )
+    db.add(borrower)
+    db.flush()
+    
+    # Create deal
+    deal = Deal(
+        organization_id=current_user.organization_id,
+        borrower_id=borrower.id,
+        deal_type=loan_data.deal_type,
+        loan_amount=loan_data.loan_amount,
+        appraised_value=loan_data.appraised_value,
+        interest_rate=loan_data.interest_rate,
+        amortization_months=loan_data.amortization_months,
+        balloon_months=loan_data.balloon_months,
+        status="pending"
+    )
+    db.add(deal)
+    db.commit()
+    db.refresh(deal)
+    
+    return {
+        "id": deal.id,
+        "borrower_name": borrower.name,
+        "company_name": borrower.name,
+        "loan_amount": deal.loan_amount,
+        "status": deal.status,
+        "loan_purpose": deal.deal_type,
+        "created_at": deal.created_at.isoformat()
+    }
+
 @app.get("/api/deals/{deal_id}")
 def get_deal(
     deal_id: str,
