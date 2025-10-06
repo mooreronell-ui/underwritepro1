@@ -866,6 +866,43 @@ async def generate_report(
         db.rollback()
         raise HTTPException(status_code=500, detail="Report generation failed")
 
+# ==================== Loan API Aliases (for frontend compatibility) ====================
+
+# The frontend uses /api/loans but backend uses /api/deals
+# Add alias endpoints for backwards compatibility
+
+@app.post("/api/loans", response_model=DealResponse, status_code=201)
+@limiter.limit("30/minute")
+async def create_loan_alias(
+    request: Request,
+    deal_data: DealCreate,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Create a new loan (alias for create_deal)"""
+    return await create_deal(request, deal_data, current_user, db)
+
+@app.get("/api/loans")
+@limiter.limit("60/minute")
+async def list_loans_alias(
+    request: Request,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """List all loans (alias for list_deals)"""
+    return await list_deals(request, current_user, db)
+
+@app.get("/api/loans/{loan_id}")
+@limiter.limit("60/minute")
+async def get_loan_alias(
+    loan_id: str,
+    request: Request,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Get a specific loan (alias for get_deal)"""
+    return await get_deal(loan_id, request, current_user, db)
+
 # ==================== Static Files & Frontend ====================
 
 # Mount static files and serve frontend
