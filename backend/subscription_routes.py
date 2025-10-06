@@ -24,6 +24,12 @@ class CheckoutRequest(BaseModel):
     cancel_url: str
 
 # Subscription Endpoints
+@router.get("/config")
+async def get_stripe_config():
+    """Get Stripe publishable key for frontend"""
+    from stripe_config import get_publishable_key
+    return {"publishable_key": get_publishable_key()}
+
 @router.get("/plans")
 async def get_plans():
     """Get all available subscription plans"""
