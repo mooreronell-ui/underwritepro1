@@ -865,7 +865,7 @@ async def generate_report(
 # ==================== Static Files & Frontend ====================
 
 # Mount static files and serve frontend
-frontend_dist = "static"
+frontend_dist = os.path.join(os.path.dirname(__file__), "static")
 if os.path.exists(frontend_dist):
     app.mount("/assets", StaticFiles(directory=f"{frontend_dist}/assets"), name="assets")
     
