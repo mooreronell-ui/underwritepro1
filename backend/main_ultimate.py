@@ -738,7 +738,8 @@ def generate_report(
 # ============================================================================
 
 # Mount static files (CSS, JS, images)
-frontend_path = os.path.join(os.path.dirname(__file__), "../frontend/dist")
+# Use backend/static directory where frontend is deployed on Render
+frontend_path = os.path.join(os.path.dirname(__file__), "static")
 if os.path.exists(frontend_path):
     app.mount("/assets", StaticFiles(directory=os.path.join(frontend_path, "assets")), name="assets")
 
