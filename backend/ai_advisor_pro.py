@@ -17,7 +17,20 @@ class AIAdvisorPro:
     
     def __init__(self):
         # Initialize OpenAI client (API key from environment)
-        self.client = OpenAI()
+        # Handle proxy environment that might conflict
+        import httpx
+        
+        api_key = os.environ.get("OPENAI_API_KEY")
+        base_url = os.environ.get("OPENAI_BASE_URL")
+        
+        # Create HTTP client - let OpenAI handle it internally
+        http_client = httpx.Client()
+        
+        # Initialize with explicit parameters
+        if base_url:
+            self.client = OpenAI(api_key=api_key, base_url=base_url, http_client=http_client)
+        else:
+            self.client = OpenAI(api_key=api_key, http_client=http_client)
         
         # System prompts for different AI personas
         self.system_prompts = {

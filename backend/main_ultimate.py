@@ -664,9 +664,7 @@ def generate_report(
         "property_type": metadata.get("property_type", ""),
         "address": metadata.get("property_address", ""),
         "appraised_value": deal.appraised_value or 0,
-        "square
-
-_footage": metadata.get("square_footage", 0),
+        "square_footage": metadata.get("square_footage", 0),
         "year_built": metadata.get("year_built"),
         "occupancy_rate": metadata.get("occupancy_rate", 1.0)
     } if deal.appraised_value else None

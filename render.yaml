@@ -3,7 +3,7 @@ services:
   - type: pserv
     name: underwritepro-db
     env: docker
-    plan: standard  # Render Pro plan
+    plan: free  # Free tier for testing, upgrade to starter ($7/mo) for production
     region: oregon
     databaseName: underwritepro
     databaseUser: underwritepro
@@ -13,10 +13,10 @@ services:
   - type: web
     name: underwritepro
     env: python
-    plan: standard  # Render Pro plan
+    plan: free  # Free tier for testing, upgrade to starter ($7/mo) for production
     region: oregon
     buildCommand: "cd backend && pip install -r requirements.txt"
-    startCommand: "cd backend && gunicorn main_production:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"
+    startCommand: "cd backend && python main_ultimate.py"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -25,6 +25,8 @@ services:
           name: underwritepro-db
           property: connectionString
       - key: JWT_SECRET_KEY
-        generateValue: true
+        value: e7d0ef4a67518c6ce9849a5f133033df1bcd3110bb4accfecf2dc5516b13f9a0
       - key: OPENAI_API_KEY
-        sync: false  # Will be set manually
+        value: sk-gU2FSLRqSNMJsvWm7ewuDX
+      - key: PORT
+        value: 8000
