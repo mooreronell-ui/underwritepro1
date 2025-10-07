@@ -1,1 +1,1 @@
-web: cd backend && python main_production.py
+web: cd backend && python main_ultimate.py
