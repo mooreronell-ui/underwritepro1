@@ -279,11 +279,10 @@ async def register(user_data: UserRegister, db: Session = Depends(get_db)):
         user = User(
             id=str(uuid.uuid4()),
             email=user_data.email,
-            hashed_password=get_password_hash(user_data.password),
+            password_hash=get_password_hash(user_data.password),
             full_name=user_data.full_name,
             role="broker",
             organization_id=organization.id,
-            is_active=True,
             created_at=datetime.utcnow()
         )
         db.add(user)
@@ -328,13 +327,14 @@ async def login(credentials: UserLogin, db: Session = Depends(get_db)):
         
         user = db.query(User).filter(User.email == credentials.email).first()
         
-        if not user or not verify_password(credentials.password, user.hashed_password):
+        if not user or not verify_password(credentials.password, user.password_hash):
             raise HTTPException(
                 status_code=401,
                 detail="Incorrect email or password"
             )
         
-        if not user.is_active:
+        # Check if user has is_active attribute (some models don't)
+        if hasattr(user, 'is_active') and not user.is_active:
             raise HTTPException(
                 status_code=403,
                 detail="Account is inactive"
