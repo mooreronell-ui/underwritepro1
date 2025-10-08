@@ -1,32 +1,15 @@
 services:
-  # PostgreSQL Database
-  - type: pserv
-    name: underwritepro-db
-    env: docker
-    plan: free  # Free tier for testing, upgrade to starter ($7/mo) for production
-    region: oregon
-    databaseName: underwritepro
-    databaseUser: underwritepro
-    ipAllowList: []
-
-  # Web Service (Backend + Frontend)
   - type: web
-    name: underwritepro
-    env: python
-    plan: free  # Free tier for testing, upgrade to starter ($7/mo) for production
-    region: oregon
-    buildCommand: "cd backend && pip install -r requirements.txt"
-    startCommand: "cd backend && python main_ultimate.py"
+    name: underwritepro-backend
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "cd backend && python main_apple_grade.py"
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
-      - key: DATABASE_URL
-        fromDatabase:
-          name: underwritepro-db
-          property: connectionString
       - key: JWT_SECRET_KEY
         value: e7d0ef4a67518c6ce9849a5f133033df1bcd3110bb4accfecf2dc5516b13f9a0
       - key: OPENAI_API_KEY
         value: sk-gU2FSLRqSNMJsvWm7ewuDX
       - key: PORT
         value: 8000
+      - key: PYTHON_VERSION
+        value: 3.11.0

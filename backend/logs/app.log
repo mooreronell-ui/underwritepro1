@@ -2940,3 +2940,43 @@ connection to server at "localhost" (::1), port 5432 failed: FATAL:  password au
 (Background on this error at: https://sqlalche.me/e/20/e3q8)
 2025-10-02 16:06:27,677 - __main__ - ERROR - [main_production.py:74] - Failed to connect to database
 2025-10-02 16:06:27,677 - __main__ - ERROR - [main_production.py:87] - Startup failed: Database connection failed
+2025-10-07 20:30:39,817 - database_unified - WARNING - No DATABASE_URL found in environment - using localhost for development
+2025-10-07 20:30:39,819 - database_unified - WARNING - Checked: DATABASE_URL, RENDER_EXTERNAL_URL, POSTGRES_URL, POSTGRESQL_URL
+2025-10-07 20:30:39,873 - __main__ - INFO - ✅ Database module loaded successfully
+2025-10-07 20:30:39,918 - __main__ - INFO - ✅ Authentication module loaded successfully
+2025-10-07 20:30:39,928 - __main__ - INFO - ✅ Underwriting engine loaded successfully
+2025-10-07 20:30:39,940 - __main__ - INFO - ✅ Document processor loaded successfully
+2025-10-07 20:30:40,063 - __main__ - INFO - ✅ Report generator loaded successfully
+2025-10-07 20:30:40,276 - __main__ - INFO - ✅ AI advisor loaded successfully
+2025-10-07 20:30:40,285 - __main__ - INFO - ✅ Static files mounted from /home/ubuntu/underwritepro1/backend/static
+2025-10-07 20:30:40,285 - __main__ - INFO - ============================================================
+2025-10-07 20:30:40,286 - __main__ - INFO - 🍎 UnderwritePro - Apple-Grade Edition
+2025-10-07 20:30:40,286 - __main__ - INFO - ============================================================
+2025-10-07 20:30:40,286 - __main__ - INFO - Port: 8000
+2025-10-07 20:30:40,286 - __main__ - INFO - API Docs: http://localhost:8000/docs
+2025-10-07 20:30:40,286 - __main__ - INFO - Health: http://localhost:8000/health
+2025-10-07 20:30:40,286 - __main__ - INFO - ============================================================
+2025-10-07 20:30:40,307 - main_apple_grade - INFO - ✅ Database module loaded successfully
+2025-10-07 20:30:40,307 - main_apple_grade - INFO - ✅ Authentication module loaded successfully
+2025-10-07 20:30:40,307 - main_apple_grade - INFO - ✅ Underwriting engine loaded successfully
+2025-10-07 20:30:40,307 - main_apple_grade - INFO - ✅ Document processor loaded successfully
+2025-10-07 20:30:40,307 - main_apple_grade - INFO - ✅ Report generator loaded successfully
+2025-10-07 20:30:40,307 - main_apple_grade - INFO - ✅ AI advisor loaded successfully
+2025-10-07 20:30:40,314 - main_apple_grade - INFO - ✅ Static files mounted from /home/ubuntu/underwritepro1/backend/static
+2025-10-07 20:30:40,315 - main_apple_grade - INFO - ============================================================
+2025-10-07 20:30:40,315 - main_apple_grade - INFO - 🚀 UnderwritePro SaaS - Apple-Grade Edition
+2025-10-07 20:30:40,315 - main_apple_grade - INFO - ============================================================
+2025-10-07 20:30:40,316 - database_unified - ERROR - Failed to create database tables: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-10-07 20:30:40,316 - main_apple_grade - ERROR - ❌ Database initialization error: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-10-07 20:30:40,316 - main_apple_grade - INFO - ✅ Application started successfully
+2025-10-07 20:30:40,317 - main_apple_grade - INFO - 🛑 Application shutting down gracefully
