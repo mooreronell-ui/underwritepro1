@@ -48,6 +48,15 @@ try:
     )
     DATABASE_AVAILABLE = True
     logger.info("✅ Database module loaded successfully")
+    
+    # Import admin routes
+    try:
+        from admin_routes import router as admin_router
+        ADMIN_ROUTES_AVAILABLE = True
+        logger.info("✅ Admin routes loaded successfully")
+    except ImportError as e:
+        ADMIN_ROUTES_AVAILABLE = False
+        logger.warning(f"⚠️  Admin routes not available: {e}")
 except ImportError as e:
     logger.error(f"❌ Database module not available: {e}")
     DATABASE_AVAILABLE = False
@@ -215,6 +224,14 @@ class UserLogin(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+# ============================================================================
+# ADMIN ROUTES (Master Admin)
+# ============================================================================
+
+if ADMIN_ROUTES_AVAILABLE:
+    app.include_router(admin_router)
+    logger.info("✅ Admin routes registered")
 
 # ============================================================================
 # HEALTH CHECK (SRE)
