@@ -452,3 +452,114 @@ if __name__ == "__main__":
         reload=False,
         log_level="info"
     )
+
+
+# ============================================================================
+# DEALS MANAGEMENT (Broker, Underwriter)
+# ============================================================================
+
+@app.post("/api/deals", response_model=DealResponse, status_code=201)
+async def create_deal(
+    deal_data: DealCreate,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Create a new deal"""
+    try:
+        deal = Deal(
+            organization_id=current_user.organization_id,
+            created_by=current_user.id,
+            **deal_data.dict()
+        )
+        db.add(deal)
+        db.commit()
+        db.refresh(deal)
+        
+        logger.info(f"Deal created: {deal.id} by user {current_user.email}")
+        
+        return DealResponse(
+            id=deal.id,
+            borrower_id=deal.borrower_id,
+            deal_type=deal.deal_type,
+            status=deal.status,
+            loan_amount=deal.loan_amount,
+            appraised_value=deal.appraised_value,
+            interest_rate=deal.interest_rate,
+            created_at=deal.created_at
+        )
+    except Exception as e:
+        logger.error(f"Failed to create deal: {e}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Failed to create deal")
+
+@app.get("/api/deals")
+async def list_deals(
+    status: Optional[str] = None,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """List all deals for the user's organization"""
+    query = db.query(Deal).filter(Deal.organization_id == current_user.organization_id)
+    
+    if status:
+        query = query.filter(Deal.status == status)
+    
+    deals = query.order_by(Deal.created_at.desc()).all()
+    
+    result = []
+    for deal in deals:
+        borrower = db.query(Borrower).filter(Borrower.id == deal.borrower_id).first()
+        result.append({
+            "id": deal.id,
+            "borrower_name": borrower.name if borrower else "Unknown",
+            "deal_type": deal.deal_type,
+            "status": deal.status,
+            "loan_amount": deal.loan_amount,
+            "created_at": deal.created_at.isoformat()
+        })
+    
+    return {"items": result}
+
+@app.get("/api/deals/{deal_id}")
+async def get_deal(
+    deal_id: str,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Get deal details"""
+    deal = db.query(Deal).filter(
+        Deal.id == deal_id,
+        Deal.organization_id == current_user.organization_id
+    ).first()
+    
+    if not deal:
+        raise HTTPException(status_code=404, detail="Deal not found")
+    
+    borrower = db.query(Borrower).filter(Borrower.id == deal.borrower_id).first()
+    documents = db.query(Document).filter(Document.deal_id == deal_id).all()
+    uw_results = db.query(UnderwritingResult).filter(
+        UnderwritingResult.deal_id == deal_id
+    ).order_by(UnderwritingResult.calculated_at.desc()).first()
+    
+    return {
+        "id": deal.id,
+        "borrower": {"id": borrower.id, "name": borrower.name} if borrower else None,
+        "deal_type": deal.deal_type,
+        "status": deal.status,
+        "loan_amount": deal.loan_amount,
+        "appraised_value": deal.appraised_value,
+        "interest_rate": deal.interest_rate,
+        "amortization_months": deal.amortization_months,
+        "balloon_months": deal.balloon_months,
+        "documents": [
+            {"id": d.id, "filename": d.filename, "type": d.document_type, "parsed": d.parsed}
+            for d in documents
+        ],
+        "underwriting_result": {
+            "dscr": uw_results.dscr_base,
+            "ltv": uw_results.ltv,
+            "risk_rating": uw_results.risk_rating,
+            "recommendation": uw_results.recommendation
+        } if uw_results else None,
+        "created_at": deal.created_at.isoformat()
+    }
