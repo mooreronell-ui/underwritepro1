@@ -44,7 +44,7 @@ logger = logging.getLogger(__name__)
 try:
     from database_unified import (
         get_db, init_db, check_db_connection,
-        User, Organization, Borrower, Deal, AuditLog
+        User, Organization, Borrower, Deal, AuditLog, Document, UnderwritingResult
     )
     DATABASE_AVAILABLE = True
     logger.info("✅ Database module loaded successfully")
