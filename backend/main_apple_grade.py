@@ -370,7 +370,17 @@ async def login(credentials: UserLogin, db: Session = Depends(get_db)):
         
         logger.info(f"✅ User logged in: {user.email}")
         
-        return TokenResponse(access_token=access_token)
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {
+                "id": str(user.id),
+                "email": user.email,
+                "full_name": user.full_name,
+                "organization_id": str(user.organization_id) if user.organization_id else None,
+                "role": user.role if hasattr(user, 'role') else "broker"
+            }
+        }
         
     except HTTPException:
         raise
