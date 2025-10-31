@@ -308,11 +308,19 @@ async def register(user_data: UserRegister, db: Session = Depends(get_db)):
         
         logger.info(f"✅ User registered: {user.email}")
         
+        # Generate access token for auto-login (fintech UX best practice)
+        access_token = create_access_token(data={"sub": user.email})
+        
         return {
-            "id": user.id,
-            "email": user.email,
-            "full_name": user.full_name,
-            "organization_id": user.organization_id
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "full_name": user.full_name,
+                "organization_id": user.organization_id,
+                "role": user.role
+            }
         }
         
     except HTTPException:
