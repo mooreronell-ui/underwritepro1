@@ -221,9 +221,17 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+class UserResponse(BaseModel):
+    id: str
+    email: str
+    full_name: str
+    organization_id: Optional[str]
+    role: str
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    user: UserResponse
 
 # ============================================================================
 # ADMIN ROUTES (Master Admin)
