@@ -319,13 +319,20 @@ async def register(request: Request, user_data: UserCreate, db: Session = Depend
         
         logger.info(f"New user registered: {user.email}")
         
-        return UserResponse(
-            id=user.id,
-            email=user.email,
-            full_name=user.full_name,
-            role=user.role,
-            organization_id=user.organization_id
-        )
+        # Create access token for auto-login
+        access_token = create_access_token(data={"sub": user.id})
+        
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {
+                "id": str(user.id),
+                "email": user.email,
+                "full_name": user.full_name,
+                "organization_id": str(user.organization_id),
+                "role": user.role
+            }
+        }
     except HTTPException:
         raise
     except Exception as e:
@@ -360,7 +367,17 @@ async def login_json(
         
         logger.info(f"User logged in: {user.email}")
         
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {
+                "id": str(user.id),
+                "email": user.email,
+                "full_name": user.full_name,
+                "organization_id": str(user.organization_id) if user.organization_id else None,
+                "role": user.role if hasattr(user, 'role') else "broker"
+            }
+        }
     except HTTPException:
         raise
     except Exception as e:
@@ -394,7 +411,17 @@ async def login_form(
         
         logger.info(f"User logged in: {user.email}")
         
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {
+                "id": str(user.id),
+                "email": user.email,
+                "full_name": user.full_name,
+                "organization_id": str(user.organization_id) if user.organization_id else None,
+                "role": user.role if hasattr(user, 'role') else "broker"
+            }
+        }
     except HTTPException:
         raise
     except Exception as e:
