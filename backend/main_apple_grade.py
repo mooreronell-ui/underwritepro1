@@ -228,6 +228,26 @@ class UserResponse(BaseModel):
     organization_id: Optional[str]
     role: str
 
+class DealCreate(BaseModel):
+    borrower_id: str
+    deal_type: str
+    status: str
+    loan_amount: float
+    appraised_value: float
+    interest_rate: float
+    amortization_months: int
+    balloon_months: Optional[int] = None
+
+class DealResponse(BaseModel):
+    id: str
+    borrower_id: str
+    deal_type: str
+    status: str
+    loan_amount: float
+    appraised_value: float
+    interest_rate: float
+    created_at: datetime
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
